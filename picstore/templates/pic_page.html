@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Picshare Site</title>
+</head>
+<body>
+    <h2>Picture Page</h2>
+    <h2>{{ msg }}</h2>
+    <h3>	{{image.description}}</h3>
+    <img src="/media/{{image.picture}}" alt="">
+    
+    <p>Uploaded: {{image.upload_datetime}}</p>
+    <p>Views: {{ image.view_count }} | <button id="likes" data-key="{{ image.key }}">Likes: {{ image.likes }}</button></p>
+    <p>Last View: {{image.last_view_datetime}}</p>
+    <a href="/">Back to home page </a>
+
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+$('button').on('click', function(event){
+    event.preventDefault();
+    var element = $(this);
+
+    $.ajax({
+        url : '/set_like/',
+        type : 'POST',
+        data : { key : $(this).attr("data-key")},
+
+        success : function(data){
+            element.html('Likes: ' + data);
+        }
+    });
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+</script>
+</body>

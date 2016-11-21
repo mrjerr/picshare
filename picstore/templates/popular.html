@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Picshare Site</title>
+</head>
+<body>
+    <h2>Popular Pictures Page</h2>
+    <p>10 most popular pictures</p>
+    <a href="/">Back to home page </a> 
+    {% for image in images %}
+    <div>
+        <a href="/{{image.key}}"><h3>{{ forloop.counter }}) {{image.description}}</h3></a>
+        <img src="/media/{{image.picture}}" alt="">
+        <p>Uploaded: {{image.upload_datetime}}</p>
+        <p>Views: {{ image.view_count }} | Likes: {{ image.likes }}</p>
+        <p>Last View: {{image.last_view_datetime|default:"-"}}</p>
+    </div>
+    <hr>
+    {% endfor %}
+    <a href="/">Back to home page </a> 
+</body>
