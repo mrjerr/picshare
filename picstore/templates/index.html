@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Picshare Site</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+
+{% block content %}
     <a href="/popular/"><h3>Popular pictures</h3></a>
     <h2>Upload picture</h2>
     <form enctype="multipart/form-data" action="/load_pic/" method="post">
@@ -12,5 +9,4 @@
       {{ form.as_p }}
       <input type="submit">
     </form>
-</body>
-</html>
+{% endblock %}
