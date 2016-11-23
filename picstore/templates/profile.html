@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+
+
+{% block user_pictures %}
+<style> 
+html {height: auto;}
+header {background-color: #5e92db;}
+header .container {padding-top: 120px;
+  padding-bottom: 10px;}
+#portfolio {
+  padding-top: 10px;
+}
+</style>
+  <section id="portfolio">
+    <div class="container">
+      <div class="row">
+          <div class="col-lg-12 text-center">
+            <h3>Ваши изображения</h3>
+            <hr class="star-primary">
+          </div>
+      </div>
+{% if images %}
+  <div class="row">
+
+  {% for image in images %}
+     <div class="col-sm-3 portfolio-item">
+      <a href="/{{ image.key }}/" class="portfolio-link" data-toggle="modal">
+          <div class="caption">
+              <div class="caption-content">
+                  <i class="fa fa-picture-o fa-2x"></i>
+                  <p>Загружено: {{image.upload_datetime|date:"SHORT_DATE_FORMAT"}}</p>
+        <p>
+        <i class="fa fa-eye "></i>  {{ image.view_count }} |
+
+        <i class="fa fa-heart "></i>  {{ image.likes }}</p>
+              </div>
+          </div>
+          <img src="/media/{{image.picture}}" class="img-responsive timage" alt="">
+      </a>
+    </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="col-lg-12 text-center">
+    <p class="lead">У вас пока нету загруженных изображений</p>
+  </div>  
+{% endif %}
+  
+  </div>
+</section>
+{% endblock %}

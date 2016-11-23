@@ -1,0 +1,29 @@
+/*.submit-btn {
+	text-align: left
+}*/
+.login-header {
+	background-color: #5e92db;
+}
+.intro-text {
+	margin-bottom: 50px;
+}
+.user-pic {
+	border: solid white 1px;
+	border-radius: 10px;
+}
+.timage {
+	max-height: 200px;
+	min-height: 200px;
+	margin: auto;
+}
+.portfolio-item {
+	margin-bottom: 5px !important;
+}
+.caption {
+	background-color: rgba(94, 146, 219,.9) !important;
+}
+html, body {height: 100%;}
+header {height: 73%;}
+/*.container {
+	height: 20% ;
+}*/

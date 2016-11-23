@@ -2,10 +2,13 @@ from random import randint
 from django.utils import timezone
 from django.db.models import F
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.baseconv import base56
 
-from .forms import ImageForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
+from .forms import ImageForm, LoginForm
 from .models import Image
 # Create your views here.
 
@@ -18,10 +21,13 @@ def index(request):
 def load_pic(request):
     if request.method == 'POST':
         form = ImageForm(data=request.POST, files=request.FILES)
+        print(form)
         if form.is_valid():
             image = form.save(commit=False)
             image.key = base56.encode(randint(0, 0x7fffff))
             image.save()
+            if request.user.is_authenticated():
+                return redirect('/profile/{}/'.format(request.user.id))
             return redirect('/{}'.format(image.key))
     return redirect('index')
 
@@ -56,3 +62,34 @@ def set_like(request):
         image.refresh_from_db()
         return HttpResponse(image.likes)
     return HttpResponse(0)
+
+
+# USER
+def profile(request, user_id):
+    user = get_object_or_404(User.objects, id=user_id)
+    images = Image.objects.all().order_by('-upload_datetime')
+    return render(request, 'profile.html', {'images': images})
+
+
+def login_view(request):
+    if request.user.is_authenticated():
+        return redirect('/profile/{}/'.format(request.user.id))
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                # the password verified for the user
+                if user.is_active:
+                    login(request, user)
+                    return redirect('/profile/{}/'.format(user.id))
+    form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
