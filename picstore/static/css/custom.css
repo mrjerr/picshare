@@ -11,6 +11,10 @@
 	border: solid white 1px;
 	border-radius: 10px;
 }
+.register {
+	margin-left: 50px;
+}
+
 .timage {
 	max-height: 200px;
 	min-height: 200px;

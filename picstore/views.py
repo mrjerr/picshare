@@ -7,6 +7,8 @@ from django.utils.baseconv import base56
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 
 from .forms import ImageForm, LoginForm
 from .models import Image
@@ -65,9 +67,24 @@ def set_like(request):
 
 
 # USER
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+        msg = form.errors
+        return render(request, 'register.html', {'form': form, 'msg': msg})
+    form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+
+@login_required(login_url='/login/')
 def profile(request, user_id):
+    print(dir(request.user.pk))
+    if not user_id.isdigit() or int(user_id) != request.user.pk:
+        return redirect('index')
     user = get_object_or_404(User.objects, id=user_id)
-    images = Image.objects.all().order_by('-upload_datetime')
+    images = Image.objects.filter(user=user).order_by('-upload_datetime')
     return render(request, 'profile.html', {'images': images})
 
 

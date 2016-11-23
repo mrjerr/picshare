@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 # Create your models here.
 
 
 class Image(models.Model):
+    user = models.ForeignKey(User, default=2)
     picture = models.ImageField('Изображение', upload_to='image_store/')
     description = models.CharField('Описание', max_length=250)
     key = models.SlugField(max_length=6, unique=True)

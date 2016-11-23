@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^set_like/$', views.set_like, name='set_like'),
     url(r'^profile/(\w+)/$', views.profile, name='profile'),
     url(r'^login/$', views.login_view, name='Login'),
+    url(r'^register/$', views.register, name='Register'),
     url(r'^logout/$', views.logout_view, name='Logout'),
     url(r'^(\w+)/$', views.pic_page, name='pic_page'),
 
