@@ -21,3 +21,14 @@ class Image(models.Model):
 
     def get_absolute_url(self):
         return reverse('pic_page', args=[self.key])
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User)
+    image = models.ForeignKey(Image)
+
+    class Meta:
+        unique_together = (("user", "image"),)
+
+    def __str__(self):
+        return '{} - {}'.format(self.user.username, self.image.picture)

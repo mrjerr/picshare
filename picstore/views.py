@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
 from .forms import ImageForm, LoginForm
-from .models import Image
+from .models import Image, Like
 # Create your views here.
 
 
@@ -29,18 +29,22 @@ def load_pic(request):
             image.key = base56.encode(randint(0, 0x7fffff))
             image.save()
             if request.user.is_authenticated():
+                image.user = User.objects.get(username=request.user.username)
+                image.save()
                 return redirect('/profile/{}/'.format(request.user.id))
             return redirect('/{}'.format(image.key))
     return redirect('index')
 
 
 def pic_page(request, key):
-    image = Image.objects.get(key=key)
+    image = get_object_or_404(Image, key=key)
     image.last_view_datetime = timezone.now()
     image.view_count = F('view_count') + 1
     image.save()
     image.refresh_from_db()
-    return render(request, 'pic_page.html', {'image': image})
+    likes = Like.objects.filter(image=image).count()
+    return render(
+        request, 'pic_page.html', {'image': image, 'likes': likes})
 
 
 def remove_pic(request, key):
@@ -58,11 +62,15 @@ def popular(request):
 def set_like(request):
     image_key = request.POST.get('key', None)
     if image_key:
-        image = Image.objects.get(key=image_key)
-        image.likes = F('likes') + 1
-        image.save()
-        image.refresh_from_db()
-        return HttpResponse(image.likes)
+        image = get_object_or_404(Image, key=image_key)
+        user = get_object_or_404(User, username=request.user.username)
+        likes = Like.objects.filter(image=image).count()
+        user_like, create = Like.objects.get_or_create(user=user, image=image)
+        if create:
+            return HttpResponse(likes + create)
+        else:
+            _ = user_like.delete()
+            return HttpResponse(likes - 1)
     return HttpResponse(0)
 
 
@@ -80,10 +88,9 @@ def register(request):
 
 @login_required(login_url='/login/')
 def profile(request, user_id):
-    print(dir(request.user.pk))
     if not user_id.isdigit() or int(user_id) != request.user.pk:
         return redirect('index')
-    user = get_object_or_404(User.objects, id=user_id)
+    user = get_object_or_404(User, id=user_id)
     images = Image.objects.filter(user=user).order_by('-upload_datetime')
     return render(request, 'profile.html', {'images': images})
 
