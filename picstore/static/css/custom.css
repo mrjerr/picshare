@@ -4,6 +4,13 @@
 .login-header {
 	background-color: #5e92db;
 }
+.picture-container {
+	margin-top: 100px;	
+}
+button.btn-like {
+  border:0px solid transparent;
+  background-color: transparent;
+ }
 .intro-text {
 	margin-bottom: 50px;
 }
@@ -26,9 +33,12 @@
 .caption {
 	background-color: rgba(94, 146, 219,.9) !important;
 }
-html, body {height: 100%;}
+li.remove-pic {
+	padding-left: 40px;
+}
+/*html, body {height: 100%;}
 header {height: 73%;}
-footer {height: 15% !important;}
+footer {height: 15% !important;}*/
 /*.container {
 	height: 20% ;
 }*/

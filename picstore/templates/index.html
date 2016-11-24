@@ -2,7 +2,6 @@
 {% load staticfiles %}
 
 {% block content %}
-
 <header>
   <div class="container">
     <div class="row">
@@ -35,5 +34,50 @@
     </div>
   </div>
 </header>
-{% block user_pictures %}{% endblock %}
+{% endblock %}
+
+{% block user_pictures %}
+<style>
+  #portfolio {padding-top: 20px;}
+</style>
+  <section id="portfolio">
+    <div class="container">
+      <div class="row">
+          <div class="col-lg-12 text-center">
+            <h3>{{ msg }}</h3>
+            <hr class="star-primary">
+          </div>
+      </div>
+{% if images %}
+  <div class="row">
+
+  {% for image in images %}
+     <div class="col-sm-3 portfolio-item">
+      <a href="/{{ image.key }}/" class="portfolio-link" data-toggle="modal">
+          <div class="caption">
+              <div class="caption-content">
+                  <i class="fa fa-picture-o fa-2x"></i>
+                  <p>Загружено: {{image.upload_datetime|date:"SHORT_DATE_FORMAT"}}</p>
+        <p>
+        <i class="fa fa-eye "></i>  {{ image.view_count }} 
+        {% if image.user.username != 'default'%}
+            | <i class="fa fa-user "></i> {{ image.user }}
+            {% else %}
+            | <i class="fa fa-user-secret "></i>
+         {% endif %} 
+              </div>
+          </div>
+          <img src="/media/{{image.picture}}" class="img-responsive timage" alt="">
+      </a>
+    </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="col-lg-12 text-center">
+    <p class="lead">У вас пока нету загруженных изображений</p>
+  </div>  
+{% endif %}
+  
+  </div>
+</section>
 {% endblock %}

@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^load_pic/$', views.load_pic, name='load_pic'),
     url(r'^popular/$', views.popular, name='popular'),
     url(r'^set_like/$', views.set_like, name='set_like'),
+    url(r'^del_image/$', views.del_image, name='del_image'),
     url(r'^profile/(\w+)/$', views.profile, name='profile'),
     url(r'^login/$', views.login_view, name='Login'),
     url(r'^register/$', views.register, name='Register'),

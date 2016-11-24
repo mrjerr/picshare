@@ -16,7 +16,17 @@ header .container {padding-top: 120px;
     <div class="container">
       <div class="row">
           <div class="col-lg-12 text-center">
-            <h3>Ваши изображения</h3>
+              {% if msg %}
+                <p class="bg-danger text-center">{{msg}}</p>     
+              {% endif %}
+            <h3>
+            {% if popular %}
+              {{ popular }}
+            {% else %}
+              Ваши изображения
+            {% endif %}
+
+            </h3>
             <hr class="star-primary">
           </div>
       </div>
@@ -31,9 +41,12 @@ header .container {padding-top: 120px;
                   <i class="fa fa-picture-o fa-2x"></i>
                   <p>Загружено: {{image.upload_datetime|date:"SHORT_DATE_FORMAT"}}</p>
         <p>
-        <i class="fa fa-eye "></i>  {{ image.view_count }} |
-
-        <i class="fa fa-heart "></i>  {{ image.likes }}</p>
+        <i class="fa fa-eye "></i>  {{ image.view_count }} 
+        {% if image.user.username != 'default'%}
+            | <i class="fa fa-user "></i> {{ image.user }}
+            {% else %}
+            | <i class="fa fa-user-secret "></i>
+         {% endif %} 
               </div>
           </div>
           <img src="/media/{{image.picture}}" class="img-responsive timage" alt="">

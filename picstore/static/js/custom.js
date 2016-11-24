@@ -8,9 +8,32 @@ $('#likes').on('click', function(event){
         data : { key : $(this).attr("data-key")},
 
         success : function(data){
-            element.html('Likes: ' + data);
+            data = data > 0 ? data : '';
+            element.html('<i class="fa fa-heart fa-2x"></i> ' + data);
         }
     });
+});
+
+$('#remove-pic').on('click', function(){
+
+    var confirmation = confirm("Вы действительно хотите удалить изображение?");
+
+    if (confirmation) {
+        $.ajax({
+            url : '/del_image/',
+            type : 'POST',
+            data : { key : $(this).attr("data-key")},
+
+            success : function(data){
+                alert('Изображение удалено');
+                window.location.replace("/");
+            },
+            error : function (data) {
+                alert('Удаление не удалось');
+                window.location.reload();
+            }
+        });
+    }
 });
 
 function getCookie(name) {

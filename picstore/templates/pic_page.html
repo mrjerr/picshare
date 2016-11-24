@@ -3,22 +3,48 @@
 
 {% block content %}
 
-    <h2>Picture Page</h2>
-    <h2>{{ msg }}</h2>
-    <h3>	{{image.description}}</h3>
-    <img src="/media/{{image.picture}}" alt="">
-    
-    <p>Uploaded: {{image.upload_datetime}}</p>
-    <p>Views: {{ image.view_count }} |
-    <button 
-    {% if user.is_authenticated %}
-    id="likes" data-key="{{ image.key }}"
-    {% endif %}
-    >Likes: {{ likes }}</button>    
-    </p>
-    <p>Last View: {{image.last_view_datetime}}</p>
-    <a href="/">Back to home page </a>
-
-
+<div class="container picture-container">
+  <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
+          <div class="modal-body">
+              <img src="/media/{{image.picture}}" class="img-responsive img-centered" alt="">
+              {% if msg %}
+                         <p class="bg-danger text-center">{{msg}}</p>     
+              {% endif %}
+              <p class="bg-primary text-center">{{image.description}}</p>
+              <ul class="list-inline item-details">
+                  <li>Загружена:
+                      <strong>{{image.upload_datetime}}</strong>
+                  </li>
+                  <li><i class="fa fa-eye fa-2x"></i>
+                      <strong>{{ image.view_count }}
+                      </strong>
+                  </li>
+                  <li>
+                      <button class="btn-like" 
+                        {% if user.is_authenticated %}
+                        id="likes" data-key="{{ image.key }}"
+                        {% else %} disabled
+                        {% endif %}
+                        ><i class="fa fa-heart fa-2x"></i> {{ likes }}</button> 
+                  </li>
+                  <li><i class="fa fa-arrows fa-2x"></i>
+                      <strong>{{ image.picture.width }}x{{ image.picture.height }}
+                      </strong>
+                  </li>
+                  <li><i class="fa fa-file-image-o fa-2x"></i>
+                      <strong>{{ image.file_size }}Mb
+                      </strong>
+                  </li>
+                  {% if owner %}
+                  <li class='remove-pic'>
+                  <button class="btn-default" data-key="{{ image.key }}" id="remove-pic"><i class="fa fa-trash fa-2x" title="Удалить"></i></button>
+                  </li>
+                  {% endif %}
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>  
 
 {% endblock %}

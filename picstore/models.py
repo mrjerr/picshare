@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 class Image(models.Model):
     user = models.ForeignKey(User, default=2)
     picture = models.ImageField('Изображение', upload_to='image_store/')
+    file_size = models.FloatField('Размер файла, Mb', default=0)
     description = models.CharField('Описание', max_length=250)
     key = models.SlugField(max_length=6, unique=True)
     view_count = models.PositiveIntegerField('Число просмотров', default=0)

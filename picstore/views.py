@@ -17,16 +17,20 @@ from .models import Image, Like
 
 def index(request):
     form = ImageForm()
-    return render(request, 'index.html', {'form': form})
+    images = Image.objects.all().order_by('-upload_datetime')[:12]
+    msg = 'Недавно загруженные'
+    return render(
+        request, 'index.html', {'form': form, 'images': images, 'msg': msg})
 
 
 def load_pic(request):
     if request.method == 'POST':
         form = ImageForm(data=request.POST, files=request.FILES)
-        print(form)
         if form.is_valid():
             image = form.save(commit=False)
+            print(dir(image))
             image.key = base56.encode(randint(0, 0x7fffff))
+            image.file_size = round(image.picture.size / (1024 * 1024), 3)
             image.save()
             if request.user.is_authenticated():
                 image.user = User.objects.get(username=request.user.username)
@@ -43,20 +47,27 @@ def pic_page(request, key):
     image.save()
     image.refresh_from_db()
     likes = Like.objects.filter(image=image).count()
+    likes = likes if likes > 0 else ''
+    owner = request.user == image.user
     return render(
-        request, 'pic_page.html', {'image': image, 'likes': likes})
+        request, 'pic_page.html',
+        {'image': image, 'likes': likes, 'owner': owner})
 
 
-def remove_pic(request, key):
-    pass
-    # i = Image.objects.all()[0]
-    # i.picture.storage.delete(i.picture.path)
-    # i.delete()
+def del_image(request):
+    image_key = request.POST.get('key', None)
+    image = get_object_or_404(Image, key=image_key)
+    user = get_object_or_404(User, username=request.user.username)
+    if image and image.user.username == user.username:
+        image.picture.storage.delete(image.picture.path)
+        image.delete()
+        return HttpResponse(1)
 
 
 def popular(request):
-    images = Image.objects.all().order_by('-view_count', '-likes')[:10]
-    return render(request, 'popular.html', {'images': images})
+    images = Image.objects.all().order_by('-view_count')[:12]
+    msg = 'Самые просматриваемые изображения'
+    return render(request, 'popular.html', {'images': images, 'popular': msg})
 
 
 def set_like(request):
